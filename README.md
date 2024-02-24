@@ -21,7 +21,7 @@ Using [Cloudflare Workers](https://workers.cloudflare.com/) and [Workers KV](htt
 
 ### Use the "Deploy" button
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/jiesou/Workers-RssTelegramForwarder)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/kenil261615/Workers-RssTelegramForwarder)
 
 1. Just click the button above and follow the step 🙂
 2. You should end up with a clone of your current repository. Find **Your new GitHub repository > Settings > Secrets** and set the following Secrets
