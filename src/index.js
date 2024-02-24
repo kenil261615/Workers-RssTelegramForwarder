@@ -2,18 +2,29 @@ var htmlparser2 = require('htmlparser2');
 
 async function sendTgMsg(env, item) {
   let fetchUrl = 'https://api.telegram.org/' + env.TELEGRAM_TOKEN + '/sendMessage';
+  let content = await extractContent(item.content);
   let body = {
     'chat_link': env.TELEGRAM_CHATID,
-    'text': item.title + '\n' + 
-      new Date(item.pubDate).toLocaleString('en-US',
-        { hour12: true,
-          timeStyle: 'short' }) + '\n' + 
-      item.link
-   };
-  await fetch(fetchUrl, { method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)})
-    .catch(error => sendTgMsg(env, item));
+    'text': `[📢](${item.thumbnail}) [${item.title}](${item.link})\n${content}`
+  };
+  await fetch(fetchUrl, { 
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).catch(error => sendTgMsg(env, item));
+}
+
+async function extractContent(content) {
+  return new Promise((resolve, reject) => {
+    let parser = new htmlparser2.Parser({
+      ontext: (text) => {
+        resolve(text.trim());
+      },
+      onerror: reject
+    });
+    parser.write(content);
+    parser.end();
+  });
 }
 
 async function forwardToTg(env) {
@@ -26,7 +37,7 @@ async function forwardToTg(env) {
   let nowIndex = items.findIndex(item => {
     return item.link === lastLink;
   }) + 1;
-  for (let index=nowIndex; index<items.length; index++) {
+  for (let index = nowIndex; index < items.length; index++) {
     let item = items[index];
     await sendTgMsg(env, item);
   }
